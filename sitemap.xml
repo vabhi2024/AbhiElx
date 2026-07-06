@@ -10,7 +10,7 @@
 
   <!-- Experience Page -->
   <url>
-    <loc>https://abhielx.netlify.app/experience/</loc>
+    <loc>https://abhielx.netlify.app/experience/experience.html</loc>
     <lastmod>2026-07-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -18,7 +18,7 @@
 
   <!-- Projects Page -->
   <url>
-    <loc>https://abhielx.netlify.app/projects/</loc>
+    <loc>https://abhielx.netlify.app/projects/project.html</loc>
     <lastmod>2026-07-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
