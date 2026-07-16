@@ -1,27 +1,31 @@
 $(document).ready(function () {
 
     /* ================= MENU ================= */
-    $('#menu').click(function () {
+    const $menu = $('#menu');
+    const $navbar = $('.navbar');
+
+    $menu.click(function () {
         $(this).toggleClass('fa-times');
-        $('.navbar').toggleClass('nav-toggle');
+        $navbar.toggleClass('nav-toggle');
     });
 
+    // Debounce/Throttle scroll logic to prevent layout thrashing
     $(window).on('scroll load', function () {
+        $menu.removeClass('fa-times');
+        $navbar.removeClass('nav-toggle');
 
-        $('#menu').removeClass('fa-times');
-        $('.navbar').removeClass('nav-toggle');
-        
+        const top = $(window).scrollTop();
 
-        // scroll spy
+        // Scroll Spy
         $('section').each(function () {
-            let height = $(this).height();
-            let offset = $(this).offset().top - 200;
-            let top = $(window).scrollTop();
-            let id = $(this).attr('id');
+            const $this = $(this);
+            const height = $this.outerHeight();
+            const offset = $this.offset().top - 200;
+            const id = $this.attr('id');
 
             if (top > offset && top < offset + height) {
                 $('.navbar ul li a').removeClass('active');
-                $('.navbar').find(`[href="#${id}"]`).addClass('active');
+                $navbar.find(`[href="#${id}"]`).addClass('active');
             }
         });
     });
@@ -29,9 +33,13 @@ $(document).ready(function () {
     /* ================= SMOOTH SCROLL ================= */
     $('a[href*="#"]').on('click', function (e) {
         e.preventDefault();
-        $('html, body').animate({
-            scrollTop: $($(this).attr('href')).offset().top
-        }, 500, 'linear');
+        const target = $(this).attr('href');
+        
+        if ($(target).length) {
+            $('html, body').animate({
+                scrollTop: $(target).offset().top
+            }, 500, 'linear');
+        }
     });
 
     /* ================= TAB VISIBILITY TITLE ================= */
@@ -46,38 +54,47 @@ $(document).ready(function () {
     });
 
     /* ================= TYPED JS ================= */
-    var typed = new Typed(".typing-text", {
-    strings: [
-        "Electronics Engineer", 
-        "PCB Design Engineer", 
-        "PCB Designer & Maintainer", 
-        "PCB Analyser & Troubleshooter"
-    ],
-    loop: true,
-    typeSpeed: 50,
-    backSpeed: 25,
-    backDelay: 500
-});
-
+    new Typed(".typing-text", {
+        strings: [
+            "Electronics Engineer", 
+            "PCB Design Engineer", 
+            "PCB Designer & Maintainer", 
+            "PCB Analyser & Troubleshooter"
+        ],
+        loop: true,
+        typeSpeed: 50,
+        backSpeed: 25,
+        backDelay: 500
+    });
 
     /* ================= FETCH SKILLS & PROJECTS ================= */
     async function fetchData(type = "skills") {
-        let response = await fetch(type === "skills" ? "skills.json" : "./projects/projects.json");
-        return response.json();
+        try {
+            const url = type === "skills" ? "skills.json" : "./projects/projects.json";
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error(`Could not fetch data for ${type}:`, error);
+        }
     }
 
     function showSkills(skills) {
-        let skillHTML = skills.map(skill => `
+        if (!skills) return;
+        const skillHTML = skills.map(skill => `
         <div class="bar">
             <div class="info">
-                <img src="${skill.icon}" alt="skill">
+                <img src="${skill.icon}" alt="${skill.name}">
                 <span>${skill.name}</span>
             </div>
         </div>`).join("");
-        document.getElementById("skillsContainer").innerHTML = skillHTML;
+        
+        const container = document.getElementById("skillsContainer");
+        if(container) container.innerHTML = skillHTML;
     }
 
     function showProjects(projects) {
+        if (!projects) return;
         let projectHTML = "";
 
         projects
@@ -86,7 +103,7 @@ $(document).ready(function () {
             .forEach(project => {
                 projectHTML += `
                 <div class="box tilt">
-                    <img draggable="false" src="assets/images/projects/${project.image}.png" alt="project">
+                    <img draggable="false" src="assets/images/projects/${project.image}.png" alt="${project.name}">
                     <div class="content">
                         <div class="tag"><h3>${project.name}</h3></div>
                         <div class="desc">
@@ -100,22 +117,21 @@ $(document).ready(function () {
                 </div>`;
             });
 
-        document.querySelector("#work .box-container").innerHTML = projectHTML;
-
-        // init tilt
-        VanillaTilt.init(document.querySelectorAll(".tilt"), { max: 15 });
-
-        // reveal
-        srtop.reveal('.work .box', { interval: 200 });
+        const workContainer = document.querySelector("#work .box-container");
+        if (workContainer) {
+            workContainer.innerHTML = projectHTML;
+            // Initialize Tilt specifically on the freshly injected elements
+            VanillaTilt.init(document.querySelectorAll(".tilt"), { max: 15 });
+            // Initialize Reveal explicitly on the freshly injected elements
+            srtop.reveal('.work .box', { interval: 200 });
+        }
     }
 
+    // Load asynchronous UI data
     fetchData().then(showSkills);
     fetchData("projects").then(showProjects);
 
-    /* ================= TILT ================= */
-    VanillaTilt.init(document.querySelectorAll(".tilt"), { max: 15 });
-
-    /* ================= SCROLL REVEAL ================= */
+    /* ================= SCROLL REVEAL INITIALIZATION ================= */
     const srtop = ScrollReveal({
         origin: 'top',
         distance: '80px',
@@ -123,44 +139,31 @@ $(document).ready(function () {
         reset: true
     });
 
-    srtop.reveal('.home .content h3', { delay: 200 });
-    srtop.reveal('.home .content p', { delay: 200 });
-    srtop.reveal('.home .content .btn', { delay: 200 });
+    // Global reveal targets
+    srtop.reveal('.home .content h3, .home .content p, .home .content .btn', { delay: 200 });
     srtop.reveal('.home .image', { delay: 400 });
-    srtop.reveal('.home .linkedin', { interval: 600 });
+    srtop.reveal('.home .linkedin, .home .telegram, .home .instagram, .home .dev', { interval: 600 });
     srtop.reveal('.home .github', { interval: 800 });
     srtop.reveal('.home .twitter', { interval: 1000 });
-    srtop.reveal('.home .telegram', { interval: 600 });
-    srtop.reveal('.home .instagram', { interval: 600 });
-    srtop.reveal('.home .dev', { interval: 600 });
 
-    srtop.reveal('.about .content h3', { delay: 200 });
-    srtop.reveal('.about .content .tag', { delay: 200 });
-    srtop.reveal('.about .content p', { delay: 200 });
-    srtop.reveal('.about .content .box-container', { delay: 200 });
-    srtop.reveal('.about .content .resumebtn', { delay: 200 });
-
+    srtop.reveal('.about .content h3, .about .content .tag, .about .content p, .about .content .box-container, .about .content .resumebtn', { delay: 200 });
+    
     srtop.reveal('.skills .container', { interval: 200 });
     srtop.reveal('.skills .container .bar', { delay: 400 });
 
     srtop.reveal('.education .box', { interval: 200 });
-
-    srtop.reveal('.work .box', { interval: 200 });
-
     srtop.reveal('.experience .timeline', { delay: 400 });
     srtop.reveal('.experience .timeline .container', { interval: 400 });
 
-    srtop.reveal('.contact .container', { delay: 400 });
-    srtop.reveal('.contact .container .form-group', { delay: 400 });
-
+    srtop.reveal('.contact .container, .contact .container .form-group', { delay: 400 });
 
     /* ================= PRELOADER FIXED ================= */
     setTimeout(() => {
-        document.querySelector('.loader-container').classList.add('fade-out');
-    }, 3000);
+        const loader = document.querySelector('.loader-container');
+        if (loader) loader.classList.add('fade-out');
+    }, 2500);
 
-
-    /* ================= DISABLE DEVTOOLS ================= */
+    /* ================= DEVTOOLS EXTRA SECURITY ================= */
     document.onkeydown = function (e) {
         if (e.keyCode === 123 || 
             (e.ctrlKey && e.shiftKey && ['I','C','J'].includes(String.fromCharCode(e.keyCode))) ||
@@ -168,7 +171,6 @@ $(document).ready(function () {
             return false;
         }
     };
-
 });
 
 /* ================= TAWK CHAT ================= */
