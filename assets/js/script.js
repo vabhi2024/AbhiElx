@@ -48,8 +48,8 @@ $(document).ready(function () {
     /* ================= TYPED JS ================= */
     var typed = new Typed(".typing-text", {
         strings: [
-            "Electronics Engineer", "Electronics Specialist", "Digital Electronics",
-            "Circuit Developer", "Circuit Maintainer", "Circuit Analyzer", "Web Developer", "Web Application Programmer"],
+            "Electronics Engineer", "PCB Design Engineer", "PCB Designer & Maintainers", "PCB Analyser & Troubleshooter",
+             "PCB Teater & Assembler"],
         loop: true,
         typeSpeed: 50,
         backSpeed: 25,
