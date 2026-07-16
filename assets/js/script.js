@@ -51,7 +51,7 @@ $(document).ready(function () {
         "Electronics Engineer", 
         "PCB Design Engineer", 
         "PCB Designer & Maintainer", 
-        "PCB Analyser & Troubleshooter",
+        "PCB Analyser & Troubleshooter"
     ],
     loop: true,
     typeSpeed: 50,
