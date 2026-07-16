@@ -47,14 +47,18 @@ $(document).ready(function () {
 
     /* ================= TYPED JS ================= */
     var typed = new Typed(".typing-text", {
-        strings: [
-            "Electronics Engineer", "PCB Design Engineer", "PCB Designer & Maintainers", "PCB Analyser & Troubleshooter",
-             "PCB Teater & Assembler"],
-        loop: true,
-        typeSpeed: 50,
-        backSpeed: 25,
-        backDelay: 500
-    });
+    strings: [
+        "Electronics Engineer", 
+        "PCB Design Engineer", 
+        "PCB Designer & Maintainer", 
+        "PCB Analyser & Troubleshooter",
+    ],
+    loop: true,
+    typeSpeed: 50,
+    backSpeed: 25,
+    backDelay: 500
+});
+
 
     /* ================= FETCH SKILLS & PROJECTS ================= */
     async function fetchData(type = "skills") {
