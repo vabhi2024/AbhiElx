@@ -49,7 +49,7 @@ $(document).ready(function () {
     var typed = new Typed(".typing-text", {
         strings: [
             "Electronics Engineer", "PCB Specialist", "PCB Design Engineer ",
-            "PCB Designer & Maintainer", "PCB Assembler & Tester", "PCB Analyser & Troubleshooter"],
+            "PCB Designer and Maintainer", "PCB Assembler and Tester", "PCB Analyser and Troubleshooter"],
         loop: true,
         typeSpeed: 50,
         backSpeed: 25,
